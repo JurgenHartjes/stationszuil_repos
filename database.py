@@ -1,8 +1,10 @@
 import psycopg2.extras
 def inserter(datum,bericht,station,naam, keuring, naammod, mailadres, datum_mod): #wil alle benodigde info hebben om dit in de database te schijven
 
+    with open('wachtwoord.txt') as w:
+        wachtwoord = w.readline()
 
-    connection_string = "host = '20.254.113.210' dbname = 'stationszuil' user = 'postgres' password = 'fj6YDB5D'"
+    connection_string = f"host = '20.254.113.210' dbname = 'stationszuil' user = 'postgres' password = {wachtwoord}"
 
     conn = psycopg2.connect(connection_string)
     cursor = conn.cursor()
@@ -13,3 +15,4 @@ def inserter(datum,bericht,station,naam, keuring, naammod, mailadres, datum_mod)
     cursor.execute(query)
     conn.commit() #verstuurt de informatie naar de database
     conn.close()
+
