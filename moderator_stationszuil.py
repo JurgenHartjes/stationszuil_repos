@@ -29,7 +29,30 @@ with open('bericht_info.csv', 'r') as f:
             datum = datum.strip()
             print(item)
 
+        #laat de moderator een bericht keuren, en deze wordt vervolgens weggescheven naar de database via een functie uit 'database.py'
+            while True:
+                keuring = input('is dit bericht goedgekeurd (y) of afgekeurd (n)?')
+                if keuring == 'y' or keuring == 'n':
+                    print('schrijven naar database\n')
+                    datum_mod = datetime.datetime.now()
+                    datum_mod = datum_mod.strftime(
+                        '%Y-%m-%d %H:%M:%S')  # laat de datum en tijd alleen het jaar,maand,dag en uur,minuut,seconde invoeren
+                    inserter(datum, bericht, station, naam, keuring, naammod, mailadres, datum_mod)
+                        #verwijdert het beoordeelde item uit de lijst 'informatie'
+                    informatie.remove(item)
+                        #schrijft de regels opnieuw in het csv bestand
+                    with open('bericht_info.csv', 'w') as f:
+                        f.write('')
+                        for item in informatie:
+                            item += '\n'
+                            #schrijft elk item in de lijst 'informatie' weg in het csv bestand
+                            with open('bericht_info.csv', 'a') as file:
+                                file.write(item)
+                    break
 
+                else:
+                    #als er geen y of n in wordt gevoerd krijgt het een foutmelding en kan je het opnieuw invoeren
+                    print('dit is geen juist antwoord. alleen de kleine letters y en n zijn toegestaan.')
 
 
 
