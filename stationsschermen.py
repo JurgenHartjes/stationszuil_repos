@@ -8,7 +8,455 @@ from datetime import datetime
 import requests, json
 
 
+def groningen():
+    global stadsnaam
+    global plaatjes
+    global stationsnaam
 
+    stadsnaam = 'Groningen'
+    weerbericht()
+    labelA = Label(master=root, text="Groningen ", height=1, bg='#FFEB3B', fg='#2D5EA9',
+                   font=('Helvetica', 50, 'bold italic'))
+    labelA.place(x=700, y=20)
+    buttonU.destroy()
+    buttonA.destroy()
+    buttonG.destroy()
+
+    img = PhotoImage(file='berichtenvak.png')
+    img = img.subsample(1, 1)
+    plaatjes.append(img)
+    label = Label(master=root, image=img, borderwidth=0)
+    label.place(x=0, rely=0.64)
+
+    imgweer = PhotoImage(file='berichtenvak.png')
+    imgweer = imgweer.zoom(5, 1)
+    plaatjes.append(imgweer)
+    labelw = Label(master=root, image=imgweer, borderwidth=0)
+    labelw.place(x=540, rely=0.64)
+
+    label = Label(master=root, text="berichten van NS gebruikers: ", height=1, bg='#2D5EA9', fg='#F7F7F7',
+                  font=('Helvetica', 16, 'bold italic'))
+    label.place(relx=0.05, rely=0.64)
+
+    labelfaci = Label(master=root, text=f"aanwezige faciliteiten in {stadsnaam}: ", height=1, bg='#2D5EA9', fg='#F7F7F7',
+                      font=('Helvetica', 16, 'bold italic'))
+    labelfaci.place(x=640, rely=0.64)
+
+    thread1 = threading.Thread(target=looping)
+    thread1.start()
+
+    thread2 = threading.Thread(target=starttijd)
+    thread2.start()
+
+    faciliteiten = haalfaciliteiten()
+    ovbike = faciliteiten[1][1]
+    elevator = faciliteiten[1][2]
+    toilet = faciliteiten[1][3]
+    park_and_ride = faciliteiten[1][4]
+
+
+
+    if ovbike == True:
+        ovbikep = PhotoImage(file='img_ovfiets.png')
+        ovbikep = ovbikep.zoom(1, 1)
+        plaatjes.append(ovbikep)
+        labelbik = Label(master=root, image=ovbikep, borderwidth=0)
+        labelbik.place(x=850, rely=0.75)
+
+        kruisp = PhotoImage(file='vinkje.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=890, rely=0.88)
+
+    elif ovbike == False:
+        ovbikep = PhotoImage(file='img_ovfiets.png')
+        ovbikep = ovbikep.zoom(1, 1)
+        plaatjes.append(ovbikep)
+        labelbik = Label(master=root, image=ovbikep, borderwidth=0)
+        labelbik.place(x=850, rely=0.75)
+
+        kruisp = PhotoImage(file='kruis.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=890, rely=0.88)
+
+    if elevator == True:
+        elevatorp = PhotoImage(file='img_lift.png')
+        elevatorp = elevatorp.zoom(1, 1)
+        plaatjes.append(elevatorp)
+        labelele = Label(master=root, image=elevatorp, borderwidth=0)
+        labelele.place(x=1050, rely=0.75)
+
+        kruisp = PhotoImage(file='vinkje.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=1090, rely=0.88)
+    elif elevator == False:
+        elevatorp = PhotoImage(file='img_lift.png')
+        elevatorp = elevatorp.zoom(1, 1)
+        plaatjes.append(elevatorp)
+        labelele = Label(master=root, image=elevatorp, borderwidth=0)
+        labelele.place(x=1050, rely=0.75)
+
+        kruisp = PhotoImage(file='kruis.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=1090, rely=0.88)
+
+    if toilet == True:
+        toiletp = PhotoImage(file='img_toilet.png')
+        toiletp = toiletp.zoom(1, 1)
+        plaatjes.append(toiletp)
+        labelto = Label(master=root, image=toiletp, borderwidth=0)
+        labelto.place(x=1250, rely=0.75)
+
+        kruisp = PhotoImage(file='vinkje.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=1290, rely=0.88)
+    elif toilet == False:
+        toiletp = PhotoImage(file='img_toilet.png')
+        toiletp = toiletp.zoom(1, 1)
+        plaatjes.append(toiletp)
+        labelto = Label(master=root, image=toiletp, borderwidth=0)
+        labelto.place(x=1250, rely=0.75)
+
+        kruisp = PhotoImage(file='kruis.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=1290, rely=0.88)
+
+    if park_and_ride == True:
+        penrp = PhotoImage(file='img_pr.png')
+        penrp = penrp.zoom(1, 1)
+        plaatjes.append(penrp)
+        labelpr = Label(master=root, image=penrp, borderwidth=0)
+        labelpr.place(x=650, rely=0.75)
+
+        kruisp = PhotoImage(file='vinkje.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=690, rely=0.88)
+    elif park_and_ride == False:
+        penrp = PhotoImage(file='img_pr.png')
+        penrp = penrp.zoom(1, 1)
+        plaatjes.append(penrp)
+        labelpr = Label(master=root, image=penrp, borderwidth=0)
+        labelpr.place(x=650, rely=0.75)
+
+        kruisp = PhotoImage(file='kruis.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=690, rely=0.88)
+
+
+def utrecht():
+    global stadsnaam
+    global plaatjes
+    global stationsnaam
+
+    stadsnaam = 'Utrecht'
+    weerbericht()
+    labelA = Label(master=root, text="Utrecht ", height=1, bg='#FFEB3B', fg='#2D5EA9',
+                   font=('Helvetica', 50, 'bold italic'))
+    labelA.place(x=700, y=20)
+    buttonU.destroy()
+    buttonA.destroy()
+    buttonG.destroy()
+
+    img = PhotoImage(file='berichtenvak.png')
+    img = img.subsample(1, 1)
+    plaatjes.append(img)
+    label = Label(master=root, image=img, borderwidth=0)
+    label.place(x=0, rely=0.64)
+
+    imgweer = PhotoImage(file='berichtenvak.png')
+    imgweer = imgweer.zoom(5, 1)
+    plaatjes.append(imgweer)
+    labelw = Label(master=root, image=imgweer, borderwidth=0)
+    labelw.place(x=540, rely=0.64)
+
+    label = Label(master=root, text="berichten van NS gebruikers: ", height=1, bg='#2D5EA9', fg='#F7F7F7',
+                  font=('Helvetica', 16, 'bold italic'))
+    label.place(relx=0.05, rely=0.64)
+
+    labelfaci = Label(master=root, text=f"aanwezige faciliteiten in {stadsnaam}: ", height=1, bg='#2D5EA9', fg='#F7F7F7',
+                      font=('Helvetica', 16, 'bold italic'))
+    labelfaci.place(x=640, rely=0.64)
+
+    thread1 = threading.Thread(target=looping)
+    thread1.start()
+
+    thread2 = threading.Thread(target=starttijd)
+    thread2.start()
+
+    faciliteiten = haalfaciliteiten()
+    ovbike = faciliteiten[2][1]
+    elevator = faciliteiten[2][2]
+    toilet = faciliteiten[2][3]
+    park_and_ride = faciliteiten[2][4]
+
+    if ovbike == True:
+        ovbikep = PhotoImage(file='img_ovfiets.png')
+        ovbikep = ovbikep.zoom(1, 1)
+        plaatjes.append(ovbikep)
+        labelbik = Label(master=root, image=ovbikep, borderwidth=0)
+        labelbik.place(x=850, rely=0.75)
+
+        kruisp = PhotoImage(file='vinkje.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=890, rely=0.88)
+
+    elif ovbike == False:
+        ovbikep = PhotoImage(file='img_ovfiets.png')
+        ovbikep = ovbikep.zoom(1, 1)
+        plaatjes.append(ovbikep)
+        labelbik = Label(master=root, image=ovbikep, borderwidth=0)
+        labelbik.place(x=850, rely=0.75)
+
+        kruisp = PhotoImage(file='kruis.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=890, rely=0.88)
+
+    if elevator == True:
+        elevatorp = PhotoImage(file='img_lift.png')
+        elevatorp = elevatorp.zoom(1, 1)
+        plaatjes.append(elevatorp)
+        labelele = Label(master=root, image=elevatorp, borderwidth=0)
+        labelele.place(x=1050, rely=0.75)
+
+        kruisp = PhotoImage(file='vinkje.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=1090, rely=0.88)
+    elif elevator == False:
+        elevatorp = PhotoImage(file='img_lift.png')
+        elevatorp = elevatorp.zoom(1, 1)
+        plaatjes.append(elevatorp)
+        labelele = Label(master=root, image=elevatorp, borderwidth=0)
+        labelele.place(x=1050, rely=0.75)
+
+        kruisp = PhotoImage(file='kruis.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=1090, rely=0.88)
+
+    if toilet == True:
+        toiletp = PhotoImage(file='img_toilet.png')
+        toiletp = toiletp.zoom(1, 1)
+        plaatjes.append(toiletp)
+        labelto = Label(master=root, image=toiletp, borderwidth=0)
+        labelto.place(x=1250, rely=0.75)
+
+        kruisp = PhotoImage(file='vinkje.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=1290, rely=0.88)
+    elif toilet == False:
+        toiletp = PhotoImage(file='img_toilet.png')
+        toiletp = toiletp.zoom(1, 1)
+        plaatjes.append(toiletp)
+        labelto = Label(master=root, image=toiletp, borderwidth=0)
+        labelto.place(x=1250, rely=0.75)
+
+        kruisp = PhotoImage(file='kruis.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=1290, rely=0.88)
+
+    if park_and_ride == True:
+        penrp = PhotoImage(file='img_pr.png')
+        penrp = penrp.zoom(1, 1)
+        plaatjes.append(penrp)
+        labelpr = Label(master=root, image=penrp, borderwidth=0)
+        labelpr.place(x=650, rely=0.75)
+
+        kruisp = PhotoImage(file='vinkje.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=690, rely=0.88)
+    elif park_and_ride == False:
+        penrp = PhotoImage(file='img_pr.png')
+        penrp = penrp.zoom(1, 1)
+        plaatjes.append(penrp)
+        labelpr = Label(master=root, image=penrp, borderwidth=0)
+        labelpr.place(x=650, rely=0.75)
+
+        kruisp = PhotoImage(file='kruis.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=690, rely=0.88)
+
+plaatjes = []
+def amsterdam():
+    global stadsnaam
+    global plaatjes
+    global stationsnaam
+
+    stadsnaam = 'Amsterdam'
+    weerbericht()
+    labelA = Label(master=root, text="Amsterdam ", height=1, bg='#FFEB3B', fg='#2D5EA9',
+                  font=('Helvetica', 50, 'bold italic'))
+    labelA.place(x=700, y = 20)
+    buttonU.destroy()
+    buttonA.destroy()
+    buttonG.destroy()
+
+
+    img = PhotoImage(file='berichtenvak.png')
+    img = img.subsample(1, 1)
+    plaatjes.append(img)
+    label = Label(master=root, image=img, borderwidth=0)
+    label.place(x=0, rely=0.64)
+
+    imgweer = PhotoImage(file='berichtenvak.png')
+    imgweer = imgweer.zoom(5, 1)
+    plaatjes.append(imgweer)
+    labelw = Label(master=root, image=imgweer, borderwidth=0)
+    labelw.place(x=540, rely=0.64)
+
+    label = Label(master=root, text="berichten van NS gebruikers: ", height=1, bg='#2D5EA9', fg='#F7F7F7',
+                  font=('Helvetica', 16, 'bold italic'))
+    label.place(relx=0.05, rely=0.64)
+
+    labelfaci = Label(master=root, text=f"aanwezige faciliteiten in {stadsnaam}: ", height=1, bg='#2D5EA9', fg='#F7F7F7',
+                  font=('Helvetica', 16, 'bold italic'))
+    labelfaci.place(x=640, rely=0.64)
+
+    thread1 = threading.Thread(target=looping)
+    thread1.start()
+
+    thread2 = threading.Thread(target=starttijd)
+    thread2.start()
+
+    faciliteiten = haalfaciliteiten()
+    ovbike = faciliteiten[0][1]
+    elevator = faciliteiten[0][2]
+    toilet = faciliteiten[0][3]
+    park_and_ride = faciliteiten[0][4]
+
+
+
+    if ovbike == True:
+        ovbikep = PhotoImage(file='img_ovfiets.png')
+        ovbikep = ovbikep.zoom(1, 1)
+        plaatjes.append(ovbikep)
+        labelbik = Label(master=root, image=ovbikep, borderwidth=0)
+        labelbik.place(x=850, rely=0.75)
+
+        kruisp = PhotoImage(file='vinkje.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=890, rely=0.88)
+
+    elif ovbike == False:
+        ovbikep = PhotoImage(file='img_ovfiets.png')
+        ovbikep = ovbikep.zoom(1, 1)
+        plaatjes.append(ovbikep)
+        labelbik = Label(master=root, image=ovbikep, borderwidth=0)
+        labelbik.place(x=850, rely=0.75)
+
+        kruisp = PhotoImage(file='kruis.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=890, rely=0.88)
+
+
+
+    if elevator == True:
+        elevatorp = PhotoImage(file='img_lift.png')
+        elevatorp = elevatorp.zoom(1, 1)
+        plaatjes.append(elevatorp)
+        labelele = Label(master=root, image=elevatorp, borderwidth=0)
+        labelele.place(x=1050, rely=0.75)
+
+        kruisp = PhotoImage(file='vinkje.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=1090, rely=0.88)
+    elif elevator == False:
+        elevatorp = PhotoImage(file='img_lift.png')
+        elevatorp = elevatorp.zoom(1, 1)
+        plaatjes.append(elevatorp)
+        labelele = Label(master=root, image=elevatorp, borderwidth=0)
+        labelele.place(x=1050, rely=0.75)
+
+        kruisp = PhotoImage(file='kruis.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=1090, rely=0.88)
+
+    if toilet == True:
+        toiletp = PhotoImage(file='img_toilet.png')
+        toiletp = toiletp.zoom(1, 1)
+        plaatjes.append(toiletp)
+        labelto = Label(master=root, image=toiletp, borderwidth=0)
+        labelto.place(x=1250, rely=0.75)
+
+        kruisp = PhotoImage(file='vinkje.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=1290, rely=0.88)
+    elif toilet == False:
+        toiletp = PhotoImage(file='img_toilet.png')
+        toiletp = toiletp.zoom(1, 1)
+        plaatjes.append(toiletp)
+        labelto = Label(master=root, image=toiletp, borderwidth=0)
+        labelto.place(x=1250, rely=0.75)
+
+        kruisp = PhotoImage(file='kruis.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=1290, rely=0.88)
+
+    if park_and_ride == True:
+        penrp = PhotoImage(file='img_pr.png')
+        penrp = penrp.zoom(1, 1)
+        plaatjes.append(penrp)
+        labelpr = Label(master=root, image=penrp, borderwidth=0)
+        labelpr.place(x=650, rely=0.75)
+
+        kruisp = PhotoImage(file='vinkje.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=690, rely=0.88)
+    elif park_and_ride == False:
+        penrp = PhotoImage(file='img_pr.png')
+        penrp = penrp.zoom(1, 1)
+        plaatjes.append(penrp)
+        labelpr = Label(master=root, image=penrp, borderwidth=0)
+        labelpr.place(x=650, rely=0.75)
+
+        kruisp = PhotoImage(file='kruis.png')
+        kruisp = kruisp.subsample(10, 10)
+        plaatjes.append(kruisp)
+        kruisl = Label(master=root, image=kruisp, borderwidth=0)
+        kruisl.place(x=690, rely=0.88)
 
 
 def haalfaciliteiten():
@@ -77,7 +525,20 @@ def looping():
             i += 1 #telt 1 bij i op, zodat bij de volgende herhaling het volgende bericht wordt laten zien
 
 
+def weerbericht():
 
+    api_key = "5971236f1a5eabca19f2e65db8c05dc9"
+    global stadsnaam #haalt de gekozen stad op om daarvan het weer op te vragen
+    url = f'http://api.openweathermap.org/data/2.5/weather?q={stadsnaam}&appid={api_key}'
+    response = requests.get(url)
+    weerinfo = response.json() #in weerinfo staat alle informatie over het weer
+
+    imgweer = PhotoImage(file='wolk.png')
+    imgweer = imgweer.zoom(3, 6)
+    imgweer = imgweer.subsample(2,5)
+    labelweer = Label(master=root, image=imgweer, borderwidth=0)
+    plaatjes.append(imgweer)
+    labelweer.place(x=540, y=150)
 
 
 
