@@ -32,6 +32,9 @@ while True:  # zorgt ervoor dat als het bericht langer is dan 140 tekens, er nog
     elif len(bericht) > 140: #als er meer dan 140 karakters zijn wordt het aantal karakters genoemd, en mag de persoon het opnieuw invoeren
         print('Dit bericht heeft ' + str((len(bericht)-140)) + ' tekens te veel. Maximaal 140 tekens')
 
+toevoegen = f'{bericht}; {naam}; {station_info}; {save_time}\n'
+with open('bericht_info.csv', 'a') as f: #schrijft de benodigde info (toevoegen) in het .csv bestand
+    f.write(toevoegen)
 
 
 
