@@ -533,6 +533,7 @@ def weerbericht():
     response = requests.get(url)
     weerinfo = response.json() #in weerinfo staat alle informatie over het weer
 
+
     imgweer = PhotoImage(file='wolk.png')
     imgweer = imgweer.zoom(3, 6)
     imgweer = imgweer.subsample(2,5)
@@ -543,14 +544,28 @@ def weerbericht():
 
 
 
+
     if weerinfo['cod'] == 200:
         kelvin = 273
         temperatuur = int(weerinfo['main']['temp'] - kelvin)        #temperatuur
         vochtigheid = int(weerinfo['clouds']['all'])        #luchtvochtigheid
         wolken= str(weerinfo['weather'][0]['description'])      #bijv. 'bewolkt' of 'mistig'
         wolkenicon = str(weerinfo['weather'][0]['icon'])    #geeft de code van het te gebruiken wolken plaatje
-
+        print(wolkenicon)
         if wolken == 'broken clouds':       #zorgt ervoor dat het correcte plaatje van het weer vertoont wordt
+            if 'd' in wolkenicon:
+                imgweer = PhotoImage(file='04d@2x.png')
+                imgweer = imgweer.zoom(2, 2)
+                labelweer = Label(master=root, image=imgweer, borderwidth=0)
+                plaatjes.append(imgweer)
+                labelweer.place(x=770, y=330)
+            if 'n' in wolkenicon:
+                imgweer = PhotoImage(file='04d@2x.png')
+                imgweer = imgweer.zoom(2, 2)
+                labelweer = Label(master=root, image=imgweer, borderwidth=0)
+                plaatjes.append(imgweer)
+                labelweer.place(x=770, y=330)
+        if wolken == 'overcast clouds':       #zorgt ervoor dat het correcte plaatje van het weer vertoont wordt
             if 'd' in wolkenicon:
                 imgweer = PhotoImage(file='04d@2x.png')
                 imgweer = imgweer.zoom(2, 2)
